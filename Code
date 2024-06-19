@@ -1,0 +1,258 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+df = pd.read_csv (r'C:\Users\Nassim\Desktop/Cuchurn.csv')
+df
+df.head()
+df.tail()
+print(df.columns)
+df.describe()
+df.info()
+print(df.shape)
+df.dtypes
+df.isna().sum()
+sns.countplot(x='Contract' , data=df)
+plt.xlabel("No.of customers by each contract types")
+plt.ylabel("No.of Customers")
+sns.displot(df['tenure'] , kde=False , color = 'red')
+sns.countplot(x='Churn' , data = df)
+sns.pairplot(df)
+sns.boxplot(df)
+df.drop(['customerID'] , axis=1 , inplace=True)
+df.shape
+df['MultipleLines'].unique()
+df['MultipleLines'] = df['MultipleLines'].replace('No phone service' , 'No')
+df['MultipleLines'].unique()
+df['OnlineSecurity'].unique()
+df['OnlineSecurity'] = df['OnlineSecurity'].replace('No internet service' , 'No')
+df['OnlineSecurity'].unique()
+df['TechSupport'].unique()
+df['TechSupport'] = df['TechSupport'].replace('No internet service' , 'No')
+df['TechSupport'].unique()
+df['StreamingTV'].unique()
+df['StreamingTV'] = df['StreamingTV'].replace('No internet service' , 'No')
+df['StreamingTV'].unique()
+df['StreamingMovies'].unique()
+df['StreamingMovies'] = df['StreamingMovies'].replace('No internet service' , 'No')
+df['StreamingMovies'].unique()
+df['OnlineBackup'].unique()
+df['OnlineBackup'] = df['OnlineBackup'].replace('No internet service' , 'No')
+df['OnlineBackup'].unique()
+df['DeviceProtection'].unique()
+df['DeviceProtection'] = df['DeviceProtection'].replace('No internet service' , 'No')
+df['DeviceProtection'].unique()
+df['TotalCharges'].unique()
+lst = [i for i in df['TotalCharges'] if i==' ']
+len(lst)
+df['TotalCharges']=df['TotalCharges'].str.replace(' ' , '0')
+lst = [i for i in df['TotalCharges'] if i==' ']
+len(lst)
+df['TotalCharges']=df['TotalCharges'].astype(float)
+df.dtypes
+df.loc[df.TotalCharges==0, 'TotalCharges']=np.NaN
+df.isna().sum()
+sns.histplot(x='TotalCharges', data=df)
+df['TotalCharges'] = df['TotalCharges'].fillna(df['TotalCharges'].mean())
+df.isna().sum()
+from sklearn.preprocessing import LabelEncoder
+encoder = LabelEncoder()
+columns = ['gender','Partner','Dependents','PhoneService','MultipleLines','InternetService','OnlineSecurity','OnlineBackup','DeviceProtection','TechSupport',
+           'StreamingTV','StreamingMovies','Contract','PaperlessBilling','PaymentMethod','Churn']
+for i in df[columns]:
+    df[i]=encoder.fit_transform(df[i])
+
+df.dtypes
+df.head()
+x=df.iloc[:,:-1].values
+y=df.iloc[:,-1].values
+y
+from sklearn.model_selection import train_test_split
+x_train , x_test , y_train , y_test = train_test_split(x,y , test_size=0.30 , random_state=42)
+x_train
+x_test
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+scaler.fit(x_train)
+x_train= scaler.transform(x_train)
+x_test = scaler.transform(x_test)
+x_train
+x_test
+from sklearn.neighbors import KNeighborsClassifier
+knn=KNeighborsClassifier(n_neighbors=7)
+knn.fit(x_train , y_train)
+y_pred = knn.predict(x_test)
+y_pred
+from sklearn.metrics import confusion_matrix , accuracy_score , classification_report
+result = confusion_matrix(y_test , y_pred)
+score = accuracy_score(y_test , y_pred)
+print(score)
+print ("*"*100)
+print(result)
+print ("*"*100)
+print(classification_report(y_test , y_pred))
+from sklearn.metrics import confusion_matrix , ConfusionMatrixDisplay 
+labels=['0','1']
+result=confusion_matrix(y_test , y_pred)
+cmd=ConfusionMatrixDisplay(result, display_labels=labels)
+cmd.plot()
+from sklearn.naive_bayes import GaussianNB
+nb=GaussianNB()
+nb.fit(x_train,y_train)
+y_pred1=nb.predict(x_test)
+y_pred1
+result1 = confusion_matrix(y_test , y_pred1)
+score = accuracy_score(y_test , y_pred1)
+print(score)
+print ("*"*100)
+print(result1)
+print ("*"*100)
+print(classification_report(y_test , y_pred1))
+from sklearn.metrics import confusion_matrix , ConfusionMatrixDisplay 
+labels=['0','1']
+result1=confusion_matrix(y_test , y_pred1)
+cmd=ConfusionMatrixDisplay(result1, display_labels=labels)
+cmd.plot()
+from sklearn.svm import SVC
+model=SVC()
+model.fit(x_train,y_train)
+y_pred2=model.predict(x_test)
+y_pred2
+result2 = confusion_matrix(y_test , y_pred2)
+score = accuracy_score(y_test , y_pred2)
+print(score)
+print ("*"*100)
+print(result2)
+print ("*"*100)
+print(classification_report(y_test , y_pred2))
+from sklearn.metrics import confusion_matrix , ConfusionMatrixDisplay 
+labels=['0','1']
+result2=confusion_matrix(y_test , y_pred2)
+cmd=ConfusionMatrixDisplay(result2, display_labels=labels)
+cmd.plot()
+from sklearn.tree import DecisionTreeClassifier
+Treemodel=DecisionTreeClassifier()
+Treemodel.fit(x_train,y_train)
+y_pred3=model.predict(x_test)
+y_pred3
+result3 = confusion_matrix(y_test , y_pred3)
+score = accuracy_score(y_test , y_pred3)
+print(score)
+print ("*"*100)
+print(result3)
+print ("*"*100)
+print(classification_report(y_test , y_pred3))
+from sklearn.metrics import confusion_matrix , ConfusionMatrixDisplay 
+labels=['0','1']
+result3=confusion_matrix(y_test , y_pred3)
+cmd=ConfusionMatrixDisplay(result3, display_labels=labels)
+cmd.plot()
+from sklearn.tree import DecisionTreeClassifier
+Treemodel=DecisionTreeClassifier()
+Treemodel.fit(x_train,y_train)
+y_pred3=model.predict(x_test)
+y_pred3
+result3 = confusion_matrix(y_test , y_pred3)
+score = accuracy_score(y_test , y_pred3)
+print(score)
+print ("*"*100)
+print(result3)
+print ("*"*100)
+print(classification_report(y_test , y_pred3))
+from sklearn.metrics import confusion_matrix , ConfusionMatrixDisplay 
+labels=['0','1']
+result3=confusion_matrix(y_test , y_pred3)
+cmd=ConfusionMatrixDisplay(result3, display_labels=labels)
+cmd.plot()
+df['Churn'].value_counts()
+x=df.drop(['Churn'],axis=1)
+y=df['Churn']
+from imblearn.over_sampling import SMOTE
+sm=SMOTE()
+x_sm,y_sm=sm.fit_resample(x,y)
+y_sm.value_counts()
+from sklearn.model_selection import train_test_split
+x_train , x_test,y_train,y_test = train_test_split(x_sm,y_sm,test_size=0.30,random_state=42)
+x_train
+y_train
+y_test
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+scaler=StandardScaler()
+scaler.fit(x_train)
+x_train=scaler.transform(x_train)
+x_test=scaler.transform(x_test)
+knn_os=KNeighborsClassifier(n_neighbors=7)
+nb_os=GaussianNB()
+sv_os=SVC()
+tree_os=DecisionTreeClassifier(criterion='entropy')
+rf_os=RandomForestClassifier(n_estimators=10,criterion='entropy')
+models=[knn_os,nb_os,sv_os,tree_os,rf_os]
+for i in models:
+    print("*************",i,"**********")
+    i.fit(x_train,y_train)
+    y_pred_os=i.predict(x_test)
+    score_os=accuracy_score(y_test,y_pred_os)
+    print(score_os)
+    print("*"*100)
+    print(confusion_matrix(y_test,y_pred_os))
+    print("*"*100)
+    print(classification_report(y_test,y_pred_os))
+    labels=['0','1']
+    resalt_os=confusion_matrix(y_test,y_pred_os)
+    cmd=ConfusionMatrixDisplay(resalt_os,display_labels=labels)
+ cmd.plot()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
